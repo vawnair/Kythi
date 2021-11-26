@@ -8,14 +8,17 @@
   "private": false,
   "scripts": {
     "build": "tsc -p .",
-    "start": "node ."
+    "start": "node .",
+    "devstart": "nodemon --watch src --ext ts,json --exec \"npm run build && node .\""
   },
   "dependencies": {
     "dotenv": "^10.0.0",
-    "fastify": "^3.24.0"
+    "fastify": "^3.24.0",
+    "fastify-autoload": "^3.9.0"
   },
   "devDependencies": {
     "@types/node": "^16.11.10",
+    "nodemon": "^2.0.15",
     "typescript": "^4.5.2"
   }
 }
