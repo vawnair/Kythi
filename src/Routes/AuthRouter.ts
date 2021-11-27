@@ -1,3 +1,4 @@
+import Joi from "joi";
 import { v5 } from "uuid";
 import { hash } from "argon2";
 import { User } from "../Models/User";
@@ -21,15 +22,13 @@ export default async function (server: FastifyInstance) {
     "/register",
     {
       schema: {
-        body: {
-          type: "object",
-          properties: {
-            username: { type: "string", pattern: "^[a-zA-Z0-9_]{3,20}$" },
-            email: { type: "string", format: "email" },
-            password: { type: "string", minLength: 8 },
-          },
-          required: ["username", "email", "password"],
-        },
+        body: Joi.object().keys({
+          username: Joi.string().required().pattern(/^[a-zA-Z0-9_]{3,20}$/),
+          email: Joi.string()
+            .email()
+            .required(),
+          password: Joi.string().required().min(8),
+        }).required(),
       },
     },
     async (request, reply) => {

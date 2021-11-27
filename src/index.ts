@@ -9,6 +9,10 @@ server.register(require("fastify-autoload"), {
   dir: join(__dirname, "Routes"),
 });
 
+server.setValidatorCompiler(({ schema }) => {
+  return data => schema.validate!(data)
+})
+
 server.listen(process.env.PORT, "0.0.0.0", (err) => {
   if (err) throw err;
 
