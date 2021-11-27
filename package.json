@@ -4,7 +4,7 @@
   "main": "dist/index.js",
   "repository": "https://github.com/Nekoyre/Kythi.git",
   "author": "Neko <78627265+Nekoyre@users.noreply.github.com>",
-  "license": "GNU GPLv3",
+  "license": "GPL-3.0-only",
   "private": false,
   "scripts": {
     "build": "tsc -p .",

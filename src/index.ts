@@ -1,12 +1,11 @@
 import "dotenv/config";
+import { join } from "path";
 import fastify from "fastify";
-import fastifyAutoload from "fastify-autoload";
-import path from "path";
 
 const server = fastify();
 
-server.register(fastifyAutoload, {
-  dir: path.join(__dirname, "Routes"),
+server.register(require("fastify-autoload"), {
+  dir: join(__dirname, "Routes"),
 });
 
 server.listen(process.env.PORT, "0.0.0.0", (err) => {
