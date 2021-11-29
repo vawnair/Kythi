@@ -10,6 +10,7 @@ export interface User extends Document {
   invite: {
     count: number;
     invited: string[];
+    invitedBy: string;
   };
 }
 
