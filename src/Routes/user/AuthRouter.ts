@@ -1,9 +1,10 @@
 import Joi from "joi";
 import { v5 } from "uuid";
 import { hash } from "argon2";
-import { User } from "../Models/User";
+import { User } from "../../Models/User";
+import { Invite } from "../../Models/Invite";
 import type { FastifyInstance } from "fastify";
-import { supportedMails } from "../Utility/Constants";
+import { supportedMails } from "../../Utility/Constants";
 
 async function getNextUid(): Promise<number> {
   const docCount = await User.countDocuments();
@@ -15,6 +16,7 @@ interface RegisterBody {
   username: string;
   email: string;
   password: string;
+  inviteCode: string;
 }
 
 export default async function (server: FastifyInstance) {
@@ -28,11 +30,20 @@ export default async function (server: FastifyInstance) {
             .email()
             .required(),
           password: Joi.string().required().min(8),
+          inviteCode: Joi.string().required(),
         }).required(),
       },
     },
     async (request, reply) => {
       const { username, email, password } = request.body;
+      const inviteUsed: Invite | undefined = await Invite.findById(request.body.inviteCode);
+      const inviteAuthor: User | undefined = await User.findById(inviteUsed?.createdBy);
+
+      if (!inviteUsed || !inviteAuthor) {
+        return reply.code(400).send({
+          error: "Invalid invite.",
+        });
+      }
 
       if (!supportedMails.includes(email.split("@")[1].split(".")[0].toLocaleLowerCase())) {
         return reply.code(400).send({
@@ -54,12 +65,17 @@ export default async function (server: FastifyInstance) {
       }
 
       const user = new User();
-      user._id = v5(email, process.env.UUID_NAMESPACE);
+      user._id = v5(username, process.env.UUID_NAMESPACE);
       user.username = username;
       user.email = email.toLowerCase();
       user.password = await hash(password);
       user.uid = await getNextUid();
+      user.invite.invitedBy = inviteAuthor._id;
       await user.save();
+
+      inviteAuthor.invite.invited.push(user._id);
+      await inviteAuthor.save();
+      await inviteUsed.remove();
 
       return {
         message: "Sucessfully Registered!",

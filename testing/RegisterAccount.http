@@ -4,5 +4,6 @@ content-type: application/json
 {
     "username": "John_Doe",
     "password": "Password123",
-    "email": "testingmail@gmail.com"
+    "email": "testingmail@gmail.com",
+    "inviteCode": "epicinvite123"
 }

@@ -7,6 +7,10 @@ export interface User extends Document {
   email: string;
   uid: number;
   createdAt: Date;
+  invite: {
+    count: number;
+    invited: string[];
+  };
 }
 
 const UserSchema = new Schema({
@@ -35,6 +39,20 @@ const UserSchema = new Schema({
   createdAt: {
     type: Date,
     default: Date.now,
+  },
+  invite: {
+    count: {
+      type: Number,
+      default: 0,
+    },
+    invited: {
+      type: [String],
+      default: [],
+    },
+    invitedBy: {
+      type: String,
+      required: true,
+    },
   },
 });
 
