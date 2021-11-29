@@ -53,6 +53,7 @@ server.listen(process.env.PORT, "0.0.0.0", (err) => {
                   user.email = email.toLowerCase();
                   user.password = await hash(password);
                   user.invite.invitedBy = id;
+                  user.permissions.admin = true;
                   await user.save();
 
                   console.log("\nSuccessfully created an admin account! Dont forget your login!");

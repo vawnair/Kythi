@@ -12,6 +12,10 @@ export interface User extends Document {
     invited: string[];
     invitedBy: string;
   };
+  permissions: {
+    admin: boolean;
+    moderator: boolean;
+  }
 }
 
 const UserSchema = new Schema({
@@ -55,6 +59,16 @@ const UserSchema = new Schema({
       required: true,
     },
   },
+  permissions: {
+    admin: {
+      type: Boolean,
+      default: false,
+    },
+    moderator: {
+      type: Boolean,
+      default: false,
+    },
+  }
 });
 
 export const User = models["users"] || model<User>("users", UserSchema);
